@@ -1,4 +1,5 @@
-import React from "react";
+import React, { Component } from "react";
+import Node from "./Node/Node";
 
 function QuickpathVisualizer() {
   return (
