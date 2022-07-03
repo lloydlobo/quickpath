@@ -12,3 +12,21 @@ function App() {
 }
 
 export default App;
+
+/**
+ * @Initialize App
+ * Import QuickpathVisualizer component
+ * Import Node into QuickpathVisualizer
+ *
+ * @Draw Grid with table component HTML elements
+ * Use nodes to array and push O(n) nodes into currentRow -
+ * ... inline 2 for loops
+ * Map each item to a row a <Node> is inserted into...
+ * .. a grid
+ *
+ * @Visualize with CSS the start & end node
+ *
+ * @Algorithm Implement Dijkstra's algorithm
+ *  let weightedAlgorithms = ["dijkstra", "CLA", "greedy"];
+    let unweightedAlgorithms = ["dfs", "bfs"];
+ */
