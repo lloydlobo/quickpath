@@ -17,6 +17,7 @@ export default class QuickpathVisualizer extends Component {
     super();
     this.state = {
       grid: [],
+      mouseIsPressed: false,
     };
   } // constructor
 
@@ -30,12 +31,61 @@ export default class QuickpathVisualizer extends Component {
     this.setState({ grid: newGrid, mouseIsPressed: true });
   }
 
+  handleMouseEnter(row, column) {
+    if (!this.state.mouseIsPressed) return;
+    const newGrid = getNewGridWithToggledWalls(this.state.grid, row, column);
+    this.setState({ grid: newGrid });
+  }
+
+  handleMouseUp() {
+    this.setState({ mouseIsPressed: false });
+  }
+
+  animateSelectedAlgorithm(nodesVisitedInSequence, nodesInShortestPathOrder) {
+    for (let i = 0; i <= nodesVisitedInSequence.length; i += 1) {
+      if (i === nodesVisitedInSequence.length) {
+        setTimeout(() => {
+          this.animateShortestPath(nodesInShortestPathOrder);
+        }, 10 * i); // re-renders every 10 * i time units
+        return;
+      }
+      setTimeout(() => {
+        const node = nodesVisitedInSequence[i];
+        document.getElementById(`node-${node.row}-${node.column}`).className =
+          "node node-visited";
+      });
+    }
+  }
+
+  animateShortestPath(nodesInShortestPathOrder) {
+    for (let i = 0; i < nodesInShortestPathOrder.length; i += 1) {
+      setTimeout(() => {
+        const node = nodesInShortestPathOrder[i];
+        document.getElementById(`node-${node.row}-${node.column}`).className =
+          "node node-shortest-path";
+      }, 50 * i);
+    }
+  }
+
+  visualizeShortestPath() {
+    const { grid } = this.state;
+    const nodeStart = grid[NODE_ROW_START][NODE_COLUMN_START];
+    const nodeFinish = grid[NODE_ROW_FINISH][NODE_COLUMN_FINISH];
+
+    const nodesVisitedInSequence = dijkstra(grid, nodeStart, nodeFinish);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(nodeFinish);
+
+    this.animateSelectedAlgorithm(
+      nodesVisitedInSequence,
+      nodesInShortestPathOrder
+    );
+  }
+
   render() {
     const { grid } = this.state;
 
     return (
-      /* wrap in jsx fragment `<>`. 
-      jsx expressions must have a parent element */
+      /* wrap in jsx fragment `<>`. jsx expressions have a parent element */
 
       <>
         <div className="visualize-button-wrapper">
@@ -43,7 +93,12 @@ export default class QuickpathVisualizer extends Component {
             Use Dijkstra's Algorithm to find shortest path
           </label>
           <br></br>
-          <button id="button-visualize">Visualize Quickpath</button>
+          <button
+            onClick={() => this.visualizeShortestPath()}
+            id="button-visualize"
+          >
+            Visualize Quickpath
+          </button>
         </div>
         <div className="grid">
           {grid.map((row, rowIdx) => {
@@ -51,7 +106,6 @@ export default class QuickpathVisualizer extends Component {
               <div key={rowIdx}>
                 {row.map((node, nodeIdx) => {
                   const { row, column, isStart, isFinish, isWall } = node;
-
                   // Warning: Each child in a list should have a unique "key" prop.
                   return (
                     <Node
@@ -60,6 +114,14 @@ export default class QuickpathVisualizer extends Component {
                       isFinish={isFinish}
                       isStart={isStart}
                       isWall={isWall}
+                      mouseIsPressed={this.mouseIsPressed}
+                      onMouseDown={(row, column) =>
+                        this.handleMouseDown(row, column)
+                      }
+                      onMouseEnter={(row, column) =>
+                        this.handleMouseEnter(row, column)
+                      }
+                      onMouseUp={() => this.handleMouseUp()}
                       row={row}
                     ></Node>
                   );
