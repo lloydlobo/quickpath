@@ -1,7 +1,11 @@
 import React, { Component } from "react";
-import "./QuickpathVisualizer.css";
 import Node from "./Node/Node";
+import {
+  dijkstra,
+  getNodesInShortestPathOrder,
+} from "../algorithms/weighted/dijkstraAlgo";
 
+import "./QuickpathVisualizer.css";
 export default class QuickpathVisualizer extends Component {
   constructor(props) {
     super(props);
