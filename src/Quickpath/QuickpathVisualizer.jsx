@@ -53,7 +53,7 @@ export default class QuickpathVisualizer extends Component {
         const node = nodesVisitedInSequence[i];
         document.getElementById(`node-${node.row}-${node.column}`).className =
           "node node-visited";
-      });
+      }, 10 * i);
     }
   }
 
