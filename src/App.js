@@ -26,4 +26,7 @@ export default App;
  *
  * @Visualize with CSS the start & end node
  *
+ * @Algorithm Implement Dijkstra's algorithm
+ *  let weightedAlgorithms = ["dijkstra", "CLA", "greedy"];
+    let unweightedAlgorithms = ["dfs", "bfs"];
  */
