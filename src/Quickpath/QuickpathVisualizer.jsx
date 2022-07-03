@@ -6,60 +6,107 @@ import {
 } from "../algorithms/weighted/dijkstraAlgo";
 
 import "./QuickpathVisualizer.css";
+
+// GLOBAL VARIABLES
+const NODE_ROW_START = 10;
+const NODE_COLUMN_START = 15;
+const NODE_ROW_FINISH = 10;
+const NODE_COLUMN_FINISH = 35;
 export default class QuickpathVisualizer extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
-      nodes: [],
+      grid: [],
     };
   } // constructor
 
   componentDidMount() {
-    const nodes = [];
+    const grid = getGridInitial();
+    this.setState({ grid });
+  }
 
-    for (let row = 0; row < 20; row += 1) {
-      const rowCurrent = [];
-      for (let column = 0; column < 50; column += 1) {
-        const nodeCurrent = {
-          column,
-          row,
-          isStart: row === 10 && column === 5,
-          isFinish: row === 10 && column === 45,
-        }; // object for each node
-        rowCurrent.push(nodeCurrent);
-      }
-      nodes.push(rowCurrent);
-    } // for loop row
-
-    this.setState({ nodes });
-  } // componentDidMount
+  handleMouseDown(row, column) {
+    const newGrid = getNewGridWithToggledWalls(this.state.grid, row, column);
+    this.setState({ grid: newGrid, mouseIsPressed: true });
+  }
 
   render() {
-    const { nodes } = this.state;
-    console.trace(nodes);
+    const { grid } = this.state;
 
-    // Warning: Each child in a list should have a unique "key" prop.
     return (
-      <div className="grid">
-        {nodes.map((row, rowIdx) => {
-          return (
-            <div key={rowIdx}>
-              {row.map((node, nodeIdx) => {
-                const { isStart, isFinish } = node;
+      /* wrap in jsx fragment `<>`. 
+      jsx expressions must have a parent element */
 
-                return (
-                  <Node
-                    key={nodeIdx}
-                    isStart={isStart}
-                    isFinish={isFinish}
-                    test={"foo"}
-                  ></Node>
-                );
-              })}
-            </div>
-          );
-        })}
-      </div>
+      <>
+        <div className="visualize-button-wrapper">
+          <label htmlFor="button-visualize">
+            Use Dijkstra's Algorithm to find shortest path
+          </label>
+          <br></br>
+          <button id="button-visualize">Visualize Quickpath</button>
+        </div>
+        <div className="grid">
+          {grid.map((row, rowIdx) => {
+            return (
+              <div key={rowIdx}>
+                {row.map((node, nodeIdx) => {
+                  const { row, column, isStart, isFinish, isWall } = node;
+
+                  // Warning: Each child in a list should have a unique "key" prop.
+                  return (
+                    <Node
+                      key={nodeIdx}
+                      column={column}
+                      isFinish={isFinish}
+                      isStart={isStart}
+                      isWall={isWall}
+                      row={row}
+                    ></Node>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </>
     );
   }
 } // class QuickpathVisualizer
+
+const getGridInitial = () => {
+  const grid = [];
+  for (let row = 0; row < 20; row += 1) {
+    const rowCurrent = [];
+    for (let column = 0; column < 50; column += 1) {
+      rowCurrent.push(createNode(column, row));
+    }
+    grid.push(rowCurrent);
+  }
+  return grid;
+};
+
+const createNode = (column, row) => {
+  return {
+    column,
+    row,
+    isStart: row === NODE_ROW_START && column === NODE_COLUMN_START,
+    isFinish: row === NODE_ROW_FINISH && column === NODE_COLUMN_FINISH,
+    distance: Infinity,
+    isVisited: false,
+    isWall: false,
+    nodePrevious: null,
+  };
+};
+
+const getNewGridWithToggledWalls = (grid, row, column) => {
+  const newGrid = grid.slice();
+  const node = newGrid[row][column];
+  const newNode = {
+    ...node,
+    isWall: !node.isWall,
+  };
+
+  newGrid[row][column] = newNode;
+
+  return newGrid;
+};
