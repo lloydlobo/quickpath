@@ -1,0 +1,12 @@
+.grid {
+  margin: 6.25rem 0 0;
+  /* background-color: #2e2e2e; */
+}
+
+.grid > * {
+  line-height: 0; /* hack to fix space btw rows */
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  /* outline: 1px solid #ff0020; */
+}

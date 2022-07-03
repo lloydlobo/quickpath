@@ -22,4 +22,8 @@ export default App;
  * Use nodes to array and push O(n) nodes into currentRow -
  * ... inline 2 for loops
  * Map each item to a row a <Node> is inserted into...
+ * .. a grid
+ *
+ * @Visualize with CSS the start & end node
+ *
  */

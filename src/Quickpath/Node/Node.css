@@ -1,0 +1,21 @@
+.node {
+  display: inline-block;
+  width: clamp(
+    0.3125rem,
+    5vw - 3.1%,
+    1.5625rem
+  ); /* // drawback => someone zooms in it messes up the grid */
+  height: 100%;
+  aspect-ratio: 1;
+  outline: 1px solid hsl(240, 80%, 80%);
+  padding: 0;
+  margin: 0;
+}
+
+.node-finish {
+  background-color: hsl(51, 80%, 61.8%);
+}
+
+.node-start {
+  background-color: hsl(222, 80%, 61.8%);
+}
