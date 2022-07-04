@@ -50,12 +50,12 @@ export function drawMazeStairs(grid) {
     for (let column = 0; column < gridWidth; column += 1) {
       if (idXCurrent > 0 && idYCurrent < gridWidth - 1) {
         let nodeCurrent = grid[idXCurrent][idYCurrent];
-        console.log(row, column);
+        // console.log(row, column);
         if (
           !nodeCurrent.isWall &&
           !relevantStatuses.includes(nodeCurrent.className)
         ) {
-          console.log(idXCurrent, idYCurrent);
+          // console.log(idXCurrent, idYCurrent);
           nodeCurrent.isWall = true;
           nodeCurrent.className = `node node-wall`;
         }

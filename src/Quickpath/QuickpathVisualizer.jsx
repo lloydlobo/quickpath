@@ -6,8 +6,9 @@ import {
 } from "../algorithms/weighted/dijkstraAlgo";
 
 import "./QuickpathVisualizer.css";
-import { drawMazeStairs } from "../algorithms/maze/drawMazeStairs";
+import { drawMazeRecursiveDivision } from "../algorithms/maze/drawMazeRecursiveDivision";
 
+import { drawMazeStairs } from "../algorithms/maze/drawMazeStairs";
 // GLOBAL VARIABLES
 const NODE_ROW_START = 10;
 const NODE_COLUMN_START = 15;
@@ -109,9 +110,26 @@ export default class QuickpathVisualizer extends Component {
     });
   }
 
-  generateMazeStairs() {
+  generateMaze(type) {
     const { grid } = this.state;
-    drawMazeStairs(grid);
+    if (type === "stair") {
+      drawMazeStairs(grid);
+    }
+    if (type === "recursive-division") {
+      console.log("recursive-division");
+      drawMazeRecursiveDivision(
+        grid,
+        "wall",
+        2,
+        grid.length - 3,
+        2,
+        grid[0].length - 3,
+        "horizontal",
+        false
+      );
+      // recursiveDivisionMaze(this, 2, this.height - 3, 2, this.width - 3, "horizontal", false, "wall");
+      //
+    }
   }
 
   render() {
@@ -139,7 +157,7 @@ export default class QuickpathVisualizer extends Component {
           <button
             onClick={() => {
               // this.createMaze("wall");
-              this.generateMazeStairs();
+              this.generateMaze("recursive-division");
             }}
             id="button-maze"
           >
