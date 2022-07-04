@@ -13,6 +13,7 @@ const NODE_COLUMN_START = 15;
 const NODE_ROW_FINISH = 10;
 const NODE_COLUMN_FINISH = 35;
 export default class QuickpathVisualizer extends Component {
+  mouseIsPressed;
   constructor() {
     super();
     this.state = {
@@ -81,6 +82,11 @@ export default class QuickpathVisualizer extends Component {
     );
   }
 
+  generateMaze(row, column) {
+    const newMaze = getMazeInitial();
+    this.setState({ grid: newMaze });
+  }
+
   render() {
     const { grid } = this.state;
 
@@ -98,6 +104,13 @@ export default class QuickpathVisualizer extends Component {
             id="button-visualize"
           >
             Visualize Quickpath
+          </button>
+        </div>
+        <div className="visualize-button-maze">
+          <label htmlFor="button-maze">Generate maze</label>
+          <br></br>
+          <button onClick={() => this.generateMaze()} id="button-maze">
+            Generate Maze & Walls
           </button>
         </div>
         <div className="grid">
@@ -145,6 +158,36 @@ const getGridInitial = () => {
     grid.push(rowCurrent);
   }
   return grid;
+};
+
+const getMazeInitial = () => {
+  const grid = [];
+  const random = Math.floor(Math.random() * 100);
+  for (let row = 0; row < 20; row += 1) {
+    const rowCurrent = [];
+    for (let column = 0; column < 50; column += 1) {
+      if (column ** row % random === 0 || (row + column) % random === 0) {
+        rowCurrent.push(createMazeNode(column, row));
+      } else {
+        rowCurrent.push(createNode(column, row));
+      }
+    }
+    grid.push(rowCurrent);
+  }
+  return grid;
+};
+
+const createMazeNode = (column, row) => {
+  return {
+    column,
+    row,
+    isStart: row === NODE_ROW_START && column === NODE_COLUMN_START,
+    isFinish: row === NODE_ROW_FINISH && column === NODE_COLUMN_FINISH,
+    distance: Infinity,
+    isVisited: false,
+    isWall: true,
+    nodePrevious: null,
+  };
 };
 
 const createNode = (column, row) => {
