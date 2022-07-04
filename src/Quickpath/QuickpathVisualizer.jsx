@@ -6,12 +6,14 @@ import {
 } from "../algorithms/weighted/dijkstraAlgo";
 
 import "./QuickpathVisualizer.css";
+import { drawMazeStairs } from "../algorithms/maze/drawMazeStairs";
 
 // GLOBAL VARIABLES
 const NODE_ROW_START = 10;
 const NODE_COLUMN_START = 15;
 const NODE_ROW_FINISH = 10;
 const NODE_COLUMN_FINISH = 35;
+
 export default class QuickpathVisualizer extends Component {
   mouseIsPressed;
   constructor() {
@@ -82,9 +84,34 @@ export default class QuickpathVisualizer extends Component {
     );
   }
 
-  generateMaze(row, column) {
-    const newMaze = getMazeInitial();
-    this.setState({ grid: newMaze });
+  createMaze(type) {
+    const { grid } = this.state;
+    let random = Math.random();
+    console.log(random);
+
+    const nodes = getAllNodes(grid);
+    nodes.forEach((node) => {
+      // console.log(node);
+      let mainClassNames = ["node-start", "node-finish", "node-visited"];
+      let randomTwo = type === "wall" ? 0.25 : 0.35;
+      // console.log(random, randomTwo);
+      if (random < randomTwo && !mainClassNames.includes(node.className)) {
+        if (type === "wall") {
+          node.className = "node node-wall";
+          node.isWall = true;
+          node.weight = 0;
+        } else if (type === "weight") {
+          node.className = "node node-not-visited weight";
+          node.isWeight = true;
+          node.weight = 15;
+        }
+      }
+    });
+  }
+
+  generateMazeStairs() {
+    const { grid } = this.state;
+    drawMazeStairs(grid);
   }
 
   render() {
@@ -109,7 +136,13 @@ export default class QuickpathVisualizer extends Component {
         <div className="visualize-button-maze">
           <label htmlFor="button-maze">Generate maze</label>
           <br></br>
-          <button onClick={() => this.generateMaze()} id="button-maze">
+          <button
+            onClick={() => {
+              // this.createMaze("wall");
+              this.generateMazeStairs();
+            }}
+            id="button-maze"
+          >
             Generate Maze & Walls
           </button>
         </div>
@@ -160,36 +193,6 @@ const getGridInitial = () => {
   return grid;
 };
 
-const getMazeInitial = () => {
-  const grid = [];
-  const random = Math.floor(Math.random() * 100);
-  for (let row = 0; row < 20; row += 1) {
-    const rowCurrent = [];
-    for (let column = 0; column < 50; column += 1) {
-      if (column ** row % random === 0 || (row + column) % random === 0) {
-        rowCurrent.push(createMazeNode(column, row));
-      } else {
-        rowCurrent.push(createNode(column, row));
-      }
-    }
-    grid.push(rowCurrent);
-  }
-  return grid;
-};
-
-const createMazeNode = (column, row) => {
-  return {
-    column,
-    row,
-    isStart: row === NODE_ROW_START && column === NODE_COLUMN_START,
-    isFinish: row === NODE_ROW_FINISH && column === NODE_COLUMN_FINISH,
-    distance: Infinity,
-    isVisited: false,
-    isWall: true,
-    nodePrevious: null,
-  };
-};
-
 const createNode = (column, row) => {
   return {
     column,
@@ -214,4 +217,13 @@ const getNewGridWithToggledWalls = (grid, row, column) => {
   newGrid[row][column] = newNode;
 
   return newGrid;
+};
+const getAllNodes = (grid) => {
+  const nodes = [];
+  for (const row of grid) {
+    for (const node of row) {
+      nodes.push(node);
+    }
+  }
+  return nodes;
 };
